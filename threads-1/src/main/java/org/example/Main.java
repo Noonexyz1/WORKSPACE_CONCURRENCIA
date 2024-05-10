@@ -18,15 +18,21 @@ public class Main {
 
         /*Implementando con interfaz funcional*/
         implementingByFunctional();
+
+        showTheMainThreadEnd();
     }
 
     public static void showTheMainThread(){
         System.out.println("Lanzando thread Main: " + Thread.currentThread().getName());
+    }
+
+    public static void showTheMainThreadEnd(){
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("Terminado thread Main: " + Thread.currentThread().getName());
     }
 
     public static void exdentingByThreadClass(){
