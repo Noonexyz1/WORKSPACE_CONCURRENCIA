@@ -6,6 +6,7 @@ public class Main {
         // 1.- El hilo "main" es el principal hilo
         // 2.- De forma natural, todos los hilos (incluso "main") terminan por su propia cuenta
         // 3.- Es imposible saber cuál de los hilos se lanzará primero y/o cuál termina primero
+        // 4.- Todos los hilos creados comparten los mismos recursos, como cpu y memoria
 
         /*Mostrando el hilo del Main*/
         showTheMainThread();
