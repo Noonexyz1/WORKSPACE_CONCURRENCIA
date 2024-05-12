@@ -1,42 +1,49 @@
 package org.example;
 
-class EsperaNoti {
-    public synchronized void esperar() throws InterruptedException {
-        System.out.println("Esperando...");
+class HostParty {
+    public synchronized void procesoUno() throws InterruptedException {
+        System.out.println("El anfitrión dice: ¡Esperen un momento, por favor!");
+        System.out.println("antes del wait()");
+        /*El anfitrión le pide a todos los invitados que esperen su turno para hablar*/
         wait();
-        System.out.println("Liberado");
+        System.out.println("despues del wait()");
+        System.out.println("¡El anfitrión dice: ¡Se puede continuar!");
     }
 
-    public synchronized void liberar() throws InterruptedException {
-        System.out.println("Llegando a liberar...");
+    public synchronized void procesoDos() throws InterruptedException {
+        System.out.println("  El anfitrión dice: ¡Voy a liberar la pista de baile!");
+        System.out.println("  antes del notify()");
         Thread.sleep(2000);
         notify();
-        System.out.println("El hilo ha sido liberado");
+        /*Despues del notify() tanto el procesoUno() y procesoDos() se ejecutan y compiten por la cpu*/
+        System.out.println("  despues del notify()");
+        System.out.println("  El anfitrión dice: ¡La pista de baile está libre!");
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        EsperaNoti en = new EsperaNoti();
+        HostParty en = new HostParty();
 
-        Thread espera = new Thread(() -> {
+        Thread thread0 = new Thread(() -> {
             try {
-                en.esperar();
+                en.procesoUno();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
 
-        Thread liberar = new Thread(() -> {
+        Thread thread1 = new Thread(() -> {
             try {
-                en.liberar();
+                en.procesoDos();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
 
-        espera.start();
-        liberar.start();
+        thread0.start();
+        thread1.start();
+
     }
 
 }
