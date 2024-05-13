@@ -10,7 +10,11 @@ class Principal {
         for (int i = 0; i < 3; i++) {
             System.out.println(" " + Thread.currentThread().getName() + "- antes de Sync del proceso: " + contador + "\t\t\t\t i = " + i);
                 synchronized (this) { /*Aqui solamente entra un proceso a la vez*/
+                    /*Vamos a poner unos print() aqui para mostrar el proceso que llego primero y de quien es ese proceso mas el estado actual
+                    * del recurso y el estado despues de ser modificado*/
+                    System.out.println("  el 1er proc en llegar es del: " + Thread.currentThread().getName() + " -PROCESO CRITICO INICIADO- estado actual del recurso: " + contador + "\t\t\t\tcon i = " + i);
                     contador++;
+                    System.out.println("  el 1er proc en llegar es del: " + Thread.currentThread().getName() + " -PROCESO CRITICO TERMINADO- estado actual del recurso: " + contador + "\t\t\t\tcon i = " + i);
                 }
             /*Aqui i todavia no se ha sumado obviamente, en la primera iter muestra 0*/
             System.out.println(" " + Thread.currentThread().getName() + "- despues de Sync del proceso: " + contador + "\t\t\t i = " + i);
