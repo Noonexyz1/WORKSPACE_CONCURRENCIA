@@ -16,24 +16,26 @@ class Principal {
         for (int i = 0; i < 2; i++) {
             System.out.println(" " + Thread.currentThread().getName() + "- antes de Sync del proceso: " + contador + "\t\t\t\t i = " + i);
 
-            try {
-                if (lock.tryLock(20, TimeUnit.MILLISECONDS)){
-
-                    /*Aqui solamente entra un proceso a la vez.
-                    * Si este proceso tarda mas que la condicion de if, se saltara al else */
-
-                    /*Vamos a poner unos print() aqui para mostrar el proceso que llego primero y de quien es ese proceso mas el estado actual
-                     * del recurso y el estado despues de ser modificado*/
-                    System.out.println("  el 1er proc en llegar es del: " + Thread.currentThread().getName() + " -PROCESO CRITICO INICIADO- estado actual del recurso: " + contador + "\t\t\t\tcon i = " + i);
-                    contador++;
-                    System.out.println("  el 1er proc en llegar es del: " + Thread.currentThread().getName() + " -PROCESO CRITICO TERMINADO- estado actual del recurso: " + contador + "\t\t\t\tcon i = " + i);
-
-                } else {
-                    System.out.println("  " + Thread.currentThread().getName() + " No logre hacer mi tarea :(");
+                /*Aqui solamente entra un proceso a la vez.
+                * Si este proceso tarda mas que la condicion de if, se saltara al else */
+                try {
+                    if (lock.tryLock(200, TimeUnit.MILLISECONDS)){
+                        try {
+                            /*Vamos a poner unos print() aqui para mostrar el proceso que llego primero y de quien es ese proceso mas el estado actual
+                             * del recurso y el estado despues de ser modificado*/
+                            System.out.println("  el 1er proc en llegar es del: " + Thread.currentThread().getName() + " -PROCESO CRITICO INICIADO- estado actual del recurso: " + contador + "\t\t\t\tcon i = " + i);
+                            contador++;
+                            Thread.sleep(10);
+                            System.out.println("  el 1er proc en llegar es del: " + Thread.currentThread().getName() + " -PROCESO CRITICO TERMINADO- estado actual del recurso: " + contador + "\t\t\t\tcon i = " + i);
+                        }finally {
+                            lock.unlock();
+                        }
+                    } else {
+                        System.out.println("  " + Thread.currentThread().getName() + " No logre hacer mi tarea :(");
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
 
 
             /*Aqui i todavia no se ha sumado obviamente, en la primera iter muestra 0*/
@@ -72,7 +74,7 @@ public class Main {
         //th0.join();
         //th1.join();
 
-        Thread.sleep(3000);
+        Thread.sleep(1000);
         System.out.println(Thread.currentThread().getName() + "- Valor FINAL contador: " + principal.getContador());
 
     }
