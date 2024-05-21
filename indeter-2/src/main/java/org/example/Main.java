@@ -7,33 +7,37 @@ class Principal implements Runnable {
 
     @Override
     public void run() {
-        System.out.println(" " + Thread.currentThread().getName() + " INICIO RUN() valorCritico: " + contador);
+        //En paralelo antes del synchronized()
+        System.out.println(" " + Thread.currentThread().getName() + " INICIO SYNCHR() valorCritico: " + contador);
         //nostros ponemos un synchro aqui porque cualquiera de los hilos se paren
         //debemos pensar en que en este metodo, todos los hilos los tienen y, asi que este
         //metodo es para todos los hilos, por eso hacemos esas locas condiciones de wait y notify
-        synchronized (cerrojo) {
+        synchronized (cerrojo) {// hay hilos quienes han llegado primero al este bloque, entonces hay una cola
             // Observadores esperan hasta que el estado cambie
             while (!estadoCambiado && !Thread.currentThread().getName().equals("Thread-3")) {
                 try {
-                    cerrojo.wait(); // Observador esperando la notificación
+                    System.out.println(" " + Thread.currentThread().getName() + " " + Thread.currentThread().getState() + " ANTES WAIT valorCritico: " + contador);
+                    cerrojo.wait(); // Observador esperando la notificación, van a volver a competir despues del notify
+                    System.out.println(" " + Thread.currentThread().getName() + " " + Thread.currentThread().getState() + " DESPUS WAIT valorCritico: " + contador);
                 } catch (InterruptedException e) {}
             }
 
             // Sujeto cambia el estado y notifica a los observadores
             if (Thread.currentThread().getName().equals("Thread-3")) {
                 estadoCambiado = true; // Cambio de estado
-                cerrojo.notifyAll(); // Notificación a todos los observadores
+                //cerrojo.notifyAll(); // Notificación a todos los observadores, van a volver a competir
             }
 
             // Sección crítica de todos los hilos
-            System.out.println("  " + Thread.currentThread().getName() + " INICIO sync() valorCritico: " + contador);
+            System.out.println("  " + Thread.currentThread().getName() + " ANTES valorCritico: " + contador);
             contador++;
-            System.out.println("  " + Thread.currentThread().getName() + " FINAL sync() valorCritico: " + contador);
+            System.out.println("  " + Thread.currentThread().getName() + " DESPUES valorCritico: " + contador);
 
             // Notificación a todos para asegurar que los demás hilos puedan continuar
             cerrojo.notifyAll();
         }
-        System.out.println(" " + Thread.currentThread().getName() + " FINAL RUN() valorCritico: " + contador);
+        /*Termina el cuello de botella y empiezan todos en paralelo*/
+        System.out.println(" " + Thread.currentThread().getName() + " FINAL SYNCHR() valorCritico: " + contador);
     }
 }
 
