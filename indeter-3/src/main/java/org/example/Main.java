@@ -14,7 +14,7 @@ class Principal implements Runnable{
     }
 
     @Override //public static void run(){ var p = new Principal(true);}
-    public void run() { //La ejecucion dentro de los metodos es secuencial como si fuera normal (no dejarse guiar por como lo muestra la terminal)
+    public void run() { //La ejecucion dentro de los metodos es concurrente segun el tiempo que tiene asignado (no dejarse guiar por como lo muestra la terminal)
         //cuando se ejecuta este metodo, ya hay un ( this, osea, el objeto del estado actual )
         while (true) {
             if (consumidor){
@@ -25,7 +25,10 @@ class Principal implements Runnable{
         }
     }
 
-    private void consumiendo() {    //La ejecucion dentro de los metodos es secuencial como si fuera normal (no dejarse guiar por como lo muestra la terminal)
+    private void consumiendo() {
+        /*La ejecucion dentro de los metodos es concurrente para todos los hilos, osea para cada metodo o sentencia lo
+        * ejecuta un tiempo corto luego sigue con otro tiempo corto de otro metodo del otro thread y asi susecivamente
+        * */
         System.out.println(Thread.currentThread().getName() + ", estado: {" + Thread.currentThread().getState() + "} ANTES SYNCH(), consumiendo()");
         synchronized (lock) {
             if (tarta > 0) {
@@ -46,7 +49,7 @@ class Principal implements Runnable{
 
     }
 
-    private void cocinando() {  //La ejecucion dentro de los metodos es secuencial como si fuera normal (no dejarse guiar por como lo muestra la terminal)
+    private void cocinando() {  //La ejecucion dentro de los metodos es concurrente segun el tiempo que tiene asignado (no dejarse guiar por como lo muestra la terminal)
         System.out.println(Thread.currentThread().getName() + ", estado: {" + Thread.currentThread().getState() + "} ANTES SYNCH(), cocinando()");
         synchronized (lock) {
             if (tarta == 0) {
